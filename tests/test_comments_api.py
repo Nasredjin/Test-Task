@@ -1,16 +1,5 @@
 import pytest
-from playwright.sync_api import sync_playwright
-
-BASE_URL = "https://jsonplaceholder.typicode.com"
-
-# Фикстура для API клиента
-@pytest.fixture(scope="session")
-def api_request_context():
-    with sync_playwright() as p:
-        request_context = p.request.new_context(base_url=BASE_URL)
-        yield request_context
-        request_context.dispose()
-
+# ✅ Позитивные тесты
 # Параметризованный тест с валидацией всех полей комментариев для каждого поста
 @pytest.mark.parametrize("post_id", range(1, 11))
 def test_get_and_validate_comments(api_request_context, post_id):
@@ -42,6 +31,9 @@ def test_post_new_comment(api_request_context):
     assert data["body"] == payload["body"]
     assert "id" in data
 
+
+
+# ❌ Негативные тесты
 # Отправка пустого имени
 def test_post_comment_empty_name(api_request_context):
     payload = {
